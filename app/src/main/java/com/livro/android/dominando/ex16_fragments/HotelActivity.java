@@ -1,10 +1,9 @@
 package com.livro.android.dominando.ex16_fragments;
 
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBarActivity;
 
 
 public class HotelActivity extends ActionBarActivity implements HotelListFragment.AoClicarNoHotel {
@@ -17,8 +16,22 @@ public class HotelActivity extends ActionBarActivity implements HotelListFragmen
 
     @Override
     public void clicouNoHotel(Hotel hotel) {
-        Intent intent = new Intent(this, HotelDetalheActivity.class);
-        intent.putExtra(HotelDetalheActivity.EXTRA_HOTEL, hotel);
-        startActivity(intent);
+        if(isTablet()) {
+            HotelDetalheFragment fragment = HotelDetalheFragment.novaInstancia(hotel);
+            //
+            android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+            android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
+            ft.replace(R.id.detalhe, fragment, HotelDetalheFragment.TAG_DETALHE);
+            ft.commit();
+        } else {
+            Intent it = new Intent(this, HotelDetalheActivity.class);
+            it.putExtra(HotelDetalheActivity.EXTRA_HOTEL, hotel);
+            startActivity(it);
+        }
+    }
+
+    private boolean isTablet() {
+
+        return findViewById(R.id.detalhe) != null;
     }
 }
